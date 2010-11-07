@@ -20,7 +20,7 @@ def main():
   curdir = os.getcwd()
 
   # Begin main loop
-  for i in commands.getoutput("find %s" % curdir).split("\n"):
+  for i in commands.getoutput("find %s -regextype posix-extended -regex \".*\.(flac|ogg|mp3)\" -not -regex \"\./[A-Z0-9]{1}/.*\"" % curdir).split("\n"):
     artist = None
     fartist = None
     album = None
