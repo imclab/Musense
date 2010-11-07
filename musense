@@ -1,4 +1,7 @@
 #!/usr/bin/python
+#
+#  Musense music organization software
+#
 from mutagen.flac import FLAC
 from mutagen.easyid3 import EasyID3
 from mutagen.oggvorbis import OggVorbis
@@ -8,24 +11,23 @@ import commands
 from optparse import OptionParser
 
 def main():
-  global versionid
-  versionid = "0.3"
-  parser = OptionParser()
-  parser.add_option("--version", dest="progver", help="Display musense version and exit", action="store_true")
+
+  # Init option parse
+  parser = OptionParser(version="1.0")
   (options, args) = parser.parse_args()
-  #if len(args) != 1:
-  #  print "Please specify a directory!"
-  #  exit(1)
-  if options.progver:
-    print versionid
-    exit(0)
+
+  # Get current working dir
   curdir = os.getcwd()
-  for i in commands.getoutput("find %s" % curdir).split("\n"):
+
+  # Begin main loop
+  for i in commands.getoutput("find %s -regextype posix-extended -regex \".*\.(flac|ogg|mp3)\" -not -regex \"\./[A-Z0-9]{1}/.*\"" % curdir).split("\n"):
     artist = None
     fartist = None
     album = None
     title = None
     track = None
+
+    # Match file extension to figure out type of music
     m = re.match(".*\.(mp3|flac|ogg)", i)
     if m:
       if m.group(1) == "mp3":
