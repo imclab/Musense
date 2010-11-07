@@ -18,9 +18,6 @@ def main():
   parser = OptionParser()
   parser.add_option("--version", dest="progver", help="Display musense version and exit", action="store_true")
   (options, args) = parser.parse_args()
-  #if len(args) != 1:
-  #  print "Please specify a directory!"
-  #  exit(1)
 
   # Display version number on option
   if options.progver:
