@@ -1,0 +1,83 @@
+#!/usr/bin/python
+from mutagen.flac import FLAC
+from mutagen.easyid3 import EasyID3
+from mutagen.oggvorbis import OggVorbis
+import os
+import re
+import commands
+from optparse import OptionParser
+
+def main():
+  global versionid
+  versionid = "0.3"
+  parser = OptionParser()
+  parser.add_option("--version", dest="progver", help="Display musense version and exit", action="store_true")
+  (options, args) = parser.parse_args()
+  #if len(args) != 1:
+  #  print "Please specify a directory!"
+  #  exit(1)
+  if options.progver:
+    print versionid
+    exit(0)
+  curdir = os.getcwd()
+  for i in commands.getoutput("find %s" % curdir).split("\n"):
+    artist = None
+    fartist = None
+    album = None
+    title = None
+    track = None
+    m = re.match(".*\.(mp3|flac|ogg)", i)
+    if m:
+      if m.group(1) == "mp3":
+        audio = EasyID3(i)
+        artist = audio.get("artist")[0].encode('ascii', 'ignore')
+        fartist = artist[0]
+        album = audio.get("album")[0].encode('ascii', 'ignore')
+        title = audio.get("title")[0].encode('ascii', 'ignore')
+        if audio.has_key("tracknumber"):
+          track = re.match("0?([0-9]*)/?.*", audio.get("tracknumber")[0].encode('ascii', 'ignore')).group(1)
+          if track == '':
+            track = "None"
+          new = curdir + "/" + fartist + "/" + artist + "/" + album + "/" + track + " - " + title + ".mp3"
+        else:
+          new = curdir + "/" + fartist + "/" + artist + "/" + album + "/" + title + ".mp3"
+        if i != new:
+          os.renames(i, new)
+          print i + " --> " + new
+      elif m.group(1) == "flac":
+        audio = FLAC(i)
+        artist = audio.get("artist")[0].encode('ascii', 'ignore')
+        fartist = artist[0]
+        album = audio.get("album")[0].encode('ascii', 'ignore')
+        title = audio.get("title")[0].encode('ascii', 'ignore')
+        if audio.has_key("tracknumber"):
+          track = re.match("0?([0-9]*)/?.*", audio.get("tracknumber")[0].encode('ascii', 'ignore')).group(1)
+          if track == '':
+            track = "None"
+          new = curdir + "/" + fartist + "/" + artist + "/" + album + "/" + track + " - " + title + ".flac"
+        else:
+          new = curdir + "/" + fartist + "/" + artist + "/" + album + "/" + title + ".flac"
+        if i != new:
+          os.renames(i, new)
+          print i + " --> " + new
+      elif m.group(1) == "ogg":
+        audio = OggVorbis(i)
+        artist = audio.get("artist")[0].encode('ascii', 'ignore')
+        fartist = artist[0]
+        album = audio.get("album")[0].encode('ascii', 'ignore')
+        title = audio.get("title")[0].encode('ascii', 'ignore')
+        if audio.has_key("tracknumber"):
+          track = re.match("0?([0-9]*)/?.*", audio.get("tracknumber")[0].encode('ascii', 'ignore')).group(1)
+          if track == '':
+            track = "None"
+          new = curdir + "/" + fartist + "/" + artist + "/" + album + "/" + track + " - " + title + ".ogg"
+        else:
+          new = curdir + "/" + fartist + "/" + artist + "/" + album + "/" + title + ".ogg"
+        if i != new:
+          os.renames(i, new)
+          print i + " --> " + new
+      else:
+        print "Uhhh...... What? Not music?"
+
+if __name__ == "__main__":
+  main()
