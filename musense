@@ -8,6 +8,8 @@ import commands
 from optparse import OptionParser
 
 def main():
+
+  # Init option parse
   global versionid
   versionid = "0.3"
   parser = OptionParser()
@@ -16,16 +18,24 @@ def main():
   #if len(args) != 1:
   #  print "Please specify a directory!"
   #  exit(1)
+
+  # Display version number on option
   if options.progver:
     print versionid
     exit(0)
+
+  # Get current working dir
   curdir = os.getcwd()
+
+  # Begin main loop
   for i in commands.getoutput("find %s" % curdir).split("\n"):
     artist = None
     fartist = None
     album = None
     title = None
     track = None
+
+    # Match file extension to figure out type of music
     m = re.match(".*\.(mp3|flac|ogg)", i)
     if m:
       if m.group(1) == "mp3":
