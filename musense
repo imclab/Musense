@@ -13,7 +13,7 @@ from optparse import OptionParser
 def main():
 
   # Init option parse
-  parser = OptionParser(version="0.3")
+  parser = OptionParser(version="1.0")
   (options, args) = parser.parse_args()
 
   # Get current working dir
