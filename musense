@@ -94,7 +94,7 @@ def main():
           os.renames(i, new)
           print i + " --> " + new
       else:
-        print "Uhhh...... What? Not music?"
+        print "Unknown. This should never happen."
 
 if __name__ == "__main__":
   main()
