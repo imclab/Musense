@@ -47,54 +47,29 @@ def main():
     if m:
       if m.group(1) == "mp3":
         audio = EasyID3(i)
-        artist = audio.get("artist")[0].encode('ascii', 'ignore')
-        fartist = artist[0]
-        album = audio.get("album")[0].encode('ascii', 'ignore')
-        title = audio.get("title")[0].encode('ascii', 'ignore')
-        if audio.has_key("tracknumber"):
-          track = re.match("0?([0-9]*)/?.*", audio.get("tracknumber")[0].encode('ascii', 'ignore')).group(1)
-          if track == '':
-            track = "None"
-          new = curdir + "/" + fartist + "/" + artist + "/" + album + "/" + track + " - " + title + ".mp3"
-        else:
-          new = curdir + "/" + fartist + "/" + artist + "/" + album + "/" + title + ".mp3"
-        if i != new:
-          os.renames(i, new)
-          print i + " --> " + new
       elif m.group(1) == "flac":
         audio = FLAC(i)
-        artist = audio.get("artist")[0].encode('ascii', 'ignore')
-        fartist = artist[0]
-        album = audio.get("album")[0].encode('ascii', 'ignore')
-        title = audio.get("title")[0].encode('ascii', 'ignore')
-        if audio.has_key("tracknumber"):
-          track = re.match("0?([0-9]*)/?.*", audio.get("tracknumber")[0].encode('ascii', 'ignore')).group(1)
-          if track == '':
-            track = "None"
-          new = curdir + "/" + fartist + "/" + artist + "/" + album + "/" + track + " - " + title + ".flac"
-        else:
-          new = curdir + "/" + fartist + "/" + artist + "/" + album + "/" + title + ".flac"
-        if i != new:
-          os.renames(i, new)
-          print i + " --> " + new
       elif m.group(1) == "ogg":
         audio = OggVorbis(i)
-        artist = audio.get("artist")[0].encode('ascii', 'ignore')
-        fartist = artist[0]
-        album = audio.get("album")[0].encode('ascii', 'ignore')
-        title = audio.get("title")[0].encode('ascii', 'ignore')
-        if audio.has_key("tracknumber"):
-          track = re.match("0?([0-9]*)/?.*", audio.get("tracknumber")[0].encode('ascii', 'ignore')).group(1)
-          if track == '':
-            track = "None"
-          new = curdir + "/" + fartist + "/" + artist + "/" + album + "/" + track + " - " + title + ".ogg"
-        else:
-          new = curdir + "/" + fartist + "/" + artist + "/" + album + "/" + title + ".ogg"
-        if i != new:
-          os.renames(i, new)
-          print i + " --> " + new
       else:
         print "Unknown. This should never happen."
+    rename(i, audio, curdir)
+
+def rename(i, audio, curdir):
+  artist = audio.get("artist")[0].encode('ascii', 'ignore')
+  fartist = artist[0]
+  album = audio.get("album")[0].encode('ascii', 'ignore')
+  title = audio.get("title")[0].encode('ascii', 'ignore')
+  if audio.has_key("tracknumber"):
+    track = re.match("0?([0-9]*)/?.*", audio.get("tracknumber")[0].encode('ascii', 'ignore')).group(1)
+    if track == '':
+      track = "None"
+    new = curdir + "/" + fartist + "/" + artist + "/" + album + "/" + track + " - " + title + ".mp3"
+  else:
+    new = curdir + "/" + fartist + "/" + artist + "/" + album + "/" + title + ".mp3"
+  if i != new:
+      os.renames(i, new)
+      print i + " --> " + new
 
 if __name__ == "__main__":
   main()
