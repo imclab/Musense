@@ -41,21 +41,23 @@ def main():
     album = None
     title = None
     track = None
+    filetype = None
 
     # Match file extension to figure out type of music
     m = re.match(".*\.(mp3|flac|ogg)", i)
     if m:
-      if m.group(1) == "mp3":
+      filetype = m.group(1)
+      if filetype == "mp3":
         audio = EasyID3(i)
-      elif m.group(1) == "flac":
+      elif filetype == "flac":
         audio = FLAC(i)
-      elif m.group(1) == "ogg":
+      elif filetype == "ogg":
         audio = OggVorbis(i)
       else:
         print "Unknown. This should never happen."
-    rename(i, audio, curdir)
+    rename(i, audio, curdir, filetype)
 
-def rename(i, audio, curdir):
+def rename(i, audio, curdir, ext):
   artist = audio.get("artist")[0].encode('ascii', 'ignore')
   fartist = artist[0]
   album = audio.get("album")[0].encode('ascii', 'ignore')
@@ -64,9 +66,9 @@ def rename(i, audio, curdir):
     track = re.match("0?([0-9]*)/?.*", audio.get("tracknumber")[0].encode('ascii', 'ignore')).group(1)
     if track == '':
       track = "None"
-    new = curdir + "/" + fartist + "/" + artist + "/" + album + "/" + track + " - " + title + ".mp3"
+    new = curdir + "/" + fartist + "/" + artist + "/" + album + "/" + track + " - " + title + "." + ext
   else:
-    new = curdir + "/" + fartist + "/" + artist + "/" + album + "/" + title + ".mp3"
+    new = curdir + "/" + fartist + "/" + artist + "/" + album + "/" + title + "." + ext
   if i != new:
       os.renames(i, new)
       print i + " --> " + new
