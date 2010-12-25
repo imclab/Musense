@@ -20,6 +20,7 @@
 from mutagen.flac import FLAC
 from mutagen.easyid3 import EasyID3
 from mutagen.oggvorbis import OggVorbis
+from mutagen.mp4 import MP4
 import os
 import re
 import commands
@@ -35,7 +36,7 @@ def main():
   curdir = os.getcwd()
 
   # Begin main loop
-  for i in commands.getoutput("find %s -regextype posix-extended -regex \".*\.(flac|ogg|mp3)\" -not -regex \"\./[A-Z0-9]{1}/.*\"" % curdir).split("\n"):
+  for i in commands.getoutput("find %s -regextype posix-extended -regex \".*\.(flac|ogg|mp3|mp4|m4a)\" -not -regex \"\./[A-Z0-9]{1}/.*\"" % curdir).split("\n"):
     artist = None
     fartist = None
     album = None
@@ -44,7 +45,7 @@ def main():
     filetype = None
 
     # Match file extension to figure out type of music
-    m = re.match(".*\.(mp3|flac|ogg)", i)
+    m = re.match(".*\.(mp3|flac|ogg|mp4|m4a)", i)
     if m:
       filetype = m.group(1)
       if filetype == "mp3":
@@ -53,6 +54,8 @@ def main():
         audio = FLAC(i)
       elif filetype == "ogg":
         audio = OggVorbis(i)
+      elif filetype == "mp4" || filetype = "m4a":
+        audio = MP4(i)
       else:
         print "Unknown. This should never happen."
     rename(i, audio, curdir, filetype)
