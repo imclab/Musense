@@ -54,8 +54,10 @@ def main():
         audio = FLAC(i)
       elif filetype == "ogg":
         audio = OggVorbis(i)
-      elif filetype == "mp4" || filetype = "m4a":
+      elif filetype == "mp4" or filetype == "m4a":
         audio = MP4(i)
+        renameMP4(i, audio, curdir, filetype)
+        continue
       else:
         print "Unknown. This should never happen."
     rename(i, audio, curdir, filetype)
@@ -73,6 +75,23 @@ def rename(i, audio, curdir, ext):
   else:
     new = curdir + "/" + fartist + "/" + artist + "/" + album + "/" + title + "." + ext
   if i != new:
+      os.renames(i, new)
+      print i + " --> " + new
+
+def renameMP4(i, audio, curdir, ext):
+  artist = audio.get("\xa9ART")[0].encode('ascii', 'ignore')
+  fartist = artist[0]
+  album = audio.get("\xa9alb")[0].encode('ascii', 'ignore')
+  title = audio.get("\xa9nam")[0].encode('ascii', 'ignore')
+  if audio.has_key("trkn"):
+    track = audio.get("trkn")[0][0]
+    if track == '':
+      track = "None"
+    new = curdir + "/" + fartist + "/" + artist + "/" + album + "/" + str(track) + " - " + title + "." + ext
+  else:
+    new = curdir + "/" + fartist + "/" + artist + "/" + album + "/" + title + "." + ext
+  if i != new:
+      new = new.replace("?.", "_.")
       os.renames(i, new)
       print i + " --> " + new
 
