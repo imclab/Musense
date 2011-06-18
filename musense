@@ -67,13 +67,14 @@ def rename(i, audio, curdir, ext):
   fartist = artist[0]
   album = audio.get("album")[0].encode('ascii', 'ignore')
   title = audio.get("title")[0].encode('ascii', 'ignore')
+  finaltitle = title.replace("/", "|")
   if audio.has_key("tracknumber"):
     track = re.match("0?([0-9]*)/?.*", audio.get("tracknumber")[0].encode('ascii', 'ignore')).group(1)
     if track == '':
       track = "None"
-    new = curdir + "/" + fartist + "/" + artist + "/" + album + "/" + track + " - " + title + "." + ext
+    new = curdir + "/" + fartist + "/" + artist + "/" + album + "/" + track + " - " + finaltitle + "." + ext
   else:
-    new = curdir + "/" + fartist + "/" + artist + "/" + album + "/" + title + "." + ext
+    new = curdir + "/" + fartist + "/" + artist + "/" + album + "/" + finaltitle + "." + ext
   if i != new:
       os.renames(i, new)
       print i + " --> " + new
@@ -83,13 +84,14 @@ def renameMP4(i, audio, curdir, ext):
   fartist = artist[0]
   album = audio.get("\xa9alb")[0].encode('ascii', 'ignore')
   title = audio.get("\xa9nam")[0].encode('ascii', 'ignore')
+  finaltitle = title.replace("/", "|")
   if audio.has_key("trkn"):
     track = audio.get("trkn")[0][0]
     if track == '':
       track = "None"
-    new = curdir + "/" + fartist + "/" + artist + "/" + album + "/" + str(track) + " - " + title + "." + ext
+    new = curdir + "/" + fartist + "/" + artist + "/" + album + "/" + str(track) + " - " + finaltitle + "." + ext
   else:
-    new = curdir + "/" + fartist + "/" + artist + "/" + album + "/" + title + "." + ext
+    new = curdir + "/" + fartist + "/" + artist + "/" + album + "/" + finaltitle + "." + ext
   if i != new:
       new = new.replace("?.", "_.")
       os.renames(i, new)
