@@ -24,6 +24,7 @@ from mutagen.mp4 import MP4
 import os
 import re
 import commands
+import sys
 from optparse import OptionParser
 
 def main():
@@ -38,7 +39,13 @@ def main():
   # Begin main loop
   cmd = "find %(Dir)s -regextype posix-extended -regex \".*\.(flac|ogg|mp3)\" -not -regex \"%(Dir)s/[A-Z0-9]{1}/.*\"" % {'Dir': curdir}
   
-  for i in commands.getoutput(cmd).split("\n"):
+  listSongs = commands.getoutput(cmd).split("\n")
+  
+  if len(listSongs) == 1 and listSongs[0] == '':
+    print "Directory clean.  No new files to organize."
+    sys.exit()
+  
+  for i in listSongs:
     artist = None
     fartist = None
     album = None
