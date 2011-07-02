@@ -36,7 +36,9 @@ def main():
   curdir = os.getcwd()
 
   # Begin main loop
-  for i in commands.getoutput("find %s -regextype posix-extended -regex \".*\.(flac|ogg|mp3|mp4|m4a)\" -not -regex \"\./[A-Z0-9]{1}/.*\"" % curdir).split("\n"):
+  cmd = "find %(Dir)s -regextype posix-extended -regex \".*\.(flac|ogg|mp3)\" -not -regex \"%(Dir)s/[A-Z0-9]{1}/.*\"" % {'Dir': curdir}
+  
+  for i in commands.getoutput(cmd).split("\n"):
     artist = None
     fartist = None
     album = None
