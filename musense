@@ -24,7 +24,6 @@ from mutagen.mp4 import MP4
 import os
 import re
 import commands
-import sys
 from optparse import OptionParser
 
 def main():
@@ -37,15 +36,10 @@ def main():
   curdir = os.getcwd()
 
   # Begin main loop
-  cmd = "find %(Dir)s -regextype posix-extended -regex \".*\.(flac|ogg|mp3)\" -not -regex \"%(Dir)s/[A-Z0-9]{1}/.*\"" % {'Dir': curdir}
+  cmd = "find %(Dir)s -regextype posix-extended -regex \".*\.(flac|ogg|mp3|m4a)\" -not -regex \"%(Dir)s/[A-Z0-9]{1}/.*\"" % {'Dir': curdir}
   
-  listSongs = commands.getoutput(cmd).split("\n")
-  
-  if len(listSongs) == 1 and listSongs[0] == '':
-    print "Directory clean.  No new files to organize."
-    sys.exit()
-  
-  for i in listSongs:
+  for i in commands.getoutput(cmd).split("\n"):
+    print i;
     artist = None
     fartist = None
     album = None
@@ -72,9 +66,15 @@ def main():
     rename(i, audio, curdir, filetype)
 
 def rename(i, audio, curdir, ext):
+  if (audio.get("artist") == None or audio.get("title") == None):
+    os.renames(i, curdir + "/" + "unsuitable/" + re.match(".*/(.*\..*)", i).group(1))
+    return;
   artist = audio.get("artist")[0].encode('ascii', 'ignore')
-  fartist = artist[0]
-  album = audio.get("album")[0].encode('ascii', 'ignore')
+  fartist = artist[0].upper()
+  if audio.get("album") == None:
+    album = "Misc"
+  else:
+    album = audio.get("album")[0].encode('ascii', 'ignore')
   title = audio.get("title")[0].encode('ascii', 'ignore')
   finaltitle = title.replace("/", "|")
   if audio.has_key("tracknumber"):
@@ -89,9 +89,15 @@ def rename(i, audio, curdir, ext):
       print i + " --> " + new
 
 def renameMP4(i, audio, curdir, ext):
+  if (audio.get("\xa9ART") == None or audio.get("\xa9nam") == None):
+        os.renames(i, curdir + "/" + "unsuitable/" + re.match(".*/(.*\..*)", i).group(1))
+        return;
   artist = audio.get("\xa9ART")[0].encode('ascii', 'ignore')
-  fartist = artist[0]
-  album = audio.get("\xa9alb")[0].encode('ascii', 'ignore')
+  fartist = artist[0].upper()
+  if audio.get("\xa9alb") == None:
+    album = "Misc"
+  else:
+    album = audio.get("\xa9alb")[0].encode('ascii', 'ignore')
   title = audio.get("\xa9nam")[0].encode('ascii', 'ignore')
   finaltitle = title.replace("/", "|")
   if audio.has_key("trkn"):
